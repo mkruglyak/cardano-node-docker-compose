@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:   
+  ada_pool:
+    container_name: ada_pool
+    build:
+      context: ./pool
+    restart: unless-stopped
+    networks:
+      - cardano-network
+    ports:
+      - 3201:3201 # update with your own ports then update Dockerfiles
+    volumes:
+      - type: bind
+        source: "~/DIR/pool/db/" # update DIR with your own dir name
+        target: "/db"
+      - type: bind
+        source: "~/DIR/ipc" # update DIR with your own dir name
+        target: "/ipc"
+      - type: bind
+        source: "/DIR/pool/config" # update DIR with your own dir name
+        target: "/config"
+  
+  ada_relay:
+    container_name: ada_relay
+    build:
+      context: ./relay
+    restart: unless-stopped
+    networks:
+      - cardano-network
+    ports:
+      - 3101:3101 # update with your own ports then update Dockerfiles
+    volumes:
+      - type: bind
+        source: "/DIR/relay/db/" # update DIR with your own dir name
+        target: "/db"
+      - type: bind
+        source: "/DIR/ipc" # update DIR with your own dir name
+        target: "/ipc"
+      - type: bind
+        source: "/DIR/relay/config" # update DIR with your own dir name
+        target: "/config"
+
+networks:
+  cardano-network:
+    name: cardano-network
